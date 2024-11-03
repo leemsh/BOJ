@@ -12,8 +12,7 @@ void solve(vector<int> arr, int temp) {
         cout<<endl;
         return;
     }
-    int start = arr.empty() ? 1 : arr.back() + 1;
-    for(int i = start ;i<=n;i++) {
+    for(int i = 0 ;i<n;i++) {
         vector<int> arr1 = arr;
         arr1.push_back(i);
         solve(arr1, temp+1);
