@@ -1,71 +1,51 @@
 #include <algorithm>
-#include<iostream>
-#include<vector>
+#include <iostream>
+#include <vector>
+#include <set>
 using namespace std;
 
 int n, m;
-vector<vector<int>> v;
+set<vector<int>> unique_combinations;
 vector<int> input;
 
-void putInV(vector<int> vec) {
-    vector<int> temp;
-    for(int i:vec) {
-        temp.push_back(input[i]);
-    }
-    for(vector<int> i:v) {
-        if(temp==i) return;
-    }
-    v.push_back(temp);
-}
-
-bool isSameIn(vector<int>arr) {
-    for(vector<int> i:v) {
-        if(i == arr) return true;
-    }
-    return false;
-}
-
-
-void solve(vector<int> arr, int temp) {
-    if(arr.size()>m)return;
-    if(arr.size()==m) {
-        putInV(arr);
+void solve(vector<int>& arr, vector<bool>& visited) {
+    if (arr.size() == m) {
+        unique_combinations.insert(arr);
         return;
     }
-    for(int i = 0 ;i<n;i++) {
-        int check = 0;
-        for(int j= 0;j<arr.size();j++) {
-            if(i==arr[j]) {
-                check=1;
-                break;
-            }
-        }
-        if(check==1) {
-            continue;
-        }
-        vector<int> arr1 = arr;
-        arr1.push_back(i);
-        solve(arr1, temp+1);
+
+    for (int i = 0; i < n; i++) {
+        if (visited[i] || (i > 0 && input[i] == input[i - 1] && !visited[i - 1])) continue;
+
+        visited[i] = true;
+        arr.push_back(input[i]);
+        solve(arr, visited);
+        arr.pop_back();
+        visited[i] = false;
     }
 }
-
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(NULL);
-    cin>>n>>m;
-    for(int i=0;i<n;i++) {
-        int a; cin>>a;
-        input.push_back(a);
+
+    cin >> n >> m;
+    input.resize(n);
+    for (int i = 0; i < n; i++) {
+        cin >> input[i];
     }
     sort(input.begin(), input.end());
-    vector<int>arr;
-    solve(arr,0);
-    for(vector<int> i:v) {
-        for(int j:i) {
-            cout<<j<<" ";
+
+    vector<int> arr;
+    vector<bool> visited(n, false);
+    solve(arr, visited);
+
+    for (const auto& comb : unique_combinations) {
+        for (int num : comb) {
+            cout << num << " ";
         }
-        cout<<'\n';
+        cout << '\n';
     }
+
     return 0;
 }
